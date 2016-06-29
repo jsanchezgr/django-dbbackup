@@ -20,9 +20,7 @@ class PgDumpConnector(BaseCommandDBConnector):
             cmd += ' --port={}'.format(self.settings['PORT'])
         if self.settings.get('USER'):
             cmd += ' --user={}'.format(self.settings['USER'])
-        if self.settings.get('PASSWORD'):
-            cmd += ' --password={}'.format(self.settings['PASSWORD'])
-        else:
+        if self.settings.get('PASSWORD') is None:
             cmd += ' --no-password'
         for table in self.exclude:
             cmd += ' --exclude-table={}'.format(table)
@@ -49,6 +47,13 @@ class PgDumpConnector(BaseCommandDBConnector):
         cmd = '{} {} {}'.format(self.restore_prefix, cmd, self.restore_suffix)
         stdout, stderr = self.run_command(cmd, stdin=dump, env=self.restore_env)
         return stdout, stderr
+
+    @property
+    def env(self):
+        """Extra environment variables to be passed to shell execution"""
+        if self.settings.get('PASSWORD'):
+            return {'PGPASSWORD': self.settings.get('PASSWORD')}
+        return {}
 
 
 class PgDumpGisConnector(PgDumpConnector):
