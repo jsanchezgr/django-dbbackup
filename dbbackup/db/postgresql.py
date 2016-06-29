@@ -38,9 +38,7 @@ class PgDumpConnector(BaseCommandDBConnector):
             cmd += ' --port={}'.format(self.settings['PORT'])
         if self.settings.get('USER'):
             cmd += ' --user={}'.format(self.settings['USER'])
-        if self.settings.get('PASSWORD'):
-            cmd += ' --password={}'.format(self.settings['PASSWORD'])
-        else:
+        if self.settings.get('PASSWORD') is None:
             cmd += ' --no-password'
         if self.single_transaction:
             cmd += ' --single-transaction'
