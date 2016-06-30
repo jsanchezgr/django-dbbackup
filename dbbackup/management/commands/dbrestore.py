@@ -42,7 +42,9 @@ class Command(BaseDbBackupCommand):
         """Django command handler."""
         self.verbosity = int(options.get('verbosity'))
         self.quiet = options.get('quiet')
-        self.connector = get_connector('default')
+        self.database = options.get('database')
+        database_key = self.database if self.database else 'default'
+        self.connector = get_connector(database_key)
         try:
             connection.close()
             self.filename = options.get('input_filename')
